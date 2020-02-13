@@ -33,27 +33,34 @@ class Saved(tk.Frame):
 class EditChooser(tk.Frame):
     def __init__(self):
         tk.Frame.__init__(self)
-        self.lbl_instructions = tk.Label(text = "Which title to Edit?", font=TITLE_FONT).grid(row="0", column="0", columnspan="2")
+        self.lbl_instructions = tk.Label(self, text = "Which title to Edit?", font=TITLE_FONT).grid(row="0", column="0", columnspan="2")
         
-        self.ent_title = tk.Entry()
-        self.ent_title.grid(row="1", column="0", columnspan="2")
+        options=["Title1", "Title2", "Title3"]
+        tkvar = tk.StringVar(self)
+        tkvar.set(options[0])
+        self.menu_title = tk.OptionMenu(self, tkvar, *options)
+        self.menu_title.grid(row="1", column="0", columnspan="2")
         
-        self.btn_cancel = tk.Button(text="Cancel", font=BUTTON_FONT)
-        self.btn_cancel.grid(row="2", column="0")
-        self.btn_ok = tk.Button(text="Edit", font=BUTTON_FONT)
-        self.btn_ok.grid(row="2", column="1")        
+        self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT)
+        self.btn_cancel.grid(self, row="2", column="0")
+        self.btn_ok = tk.Button(self, text="Edit", font=BUTTON_FONT)
+        self.btn_ok.grid(row="2", column="1")     
+        
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class RemoveChooser(tk.Frame):
     def __init__(self):
-        tk.Frame.__init__(self,parent)
-        self.lbl_instructions = tk.Label(text = "Which titles to Remove?", font=TITLE_FONT).grid(row="0", column="0", columnspan="2")
+        tk.Frame.__init__(self)
+        self.lbl_instructions = tk.Label(self, text = "Which titles to Remove?", font=TITLE_FONT).grid(row="0", column="0", columnspan="2")
         
-        self.ent_title = tk.Entry()
-        self.ent_title.grid(row="1", column="0", columnspan="2")
+        options=["Title1", "Title2", "Title3"]
+        tkvar = tk.StringVar(self)
+        tkvar.set(options[0])
+        self.menu_title = tk.OptionMenu(self, tkvar, *options)
+        self.menu_title.grid(row="1", column="0", columnspan="2")
         
-        self.btn_cancel = tk.Button(text="Cancel", font=BUTTON_FONT)
+        self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT)
         self.btn_cancel.grid(row="2", column="0")
-        self.btn_ok = tk.Button(text="Remove", font=BUTTON_FONT)
+        self.btn_ok = tk.Button(self, text="Remove", font=BUTTON_FONT)
         self.btn_ok.grid(row="2", column="1")        
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class InfoFrameEntries(tk.Frame):
@@ -95,7 +102,8 @@ class InfoFrameEntries(tk.Frame):
         #--------------------------------------
         self.lbl_rating = tk.Label(self, text="Rating").grid(row="4", column="0")
         self.ent_rating = tk.Entry(self, text="Rating")
-        self.ent_rating.grid(row="4", column="1")        
+        self.ent_rating.grid(row="4", column="1")      
+        #---------------------------------------
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class InfoFrame(tk.Frame):
     def __init__(self):
@@ -119,8 +127,8 @@ class InfoFrame(tk.Frame):
         #------------------------------------------
         self.btn_cancel = tk.Button(self, text="Cancel")
         self.btn_cancel.grid(row="4", column="0")
-        self.btn_cancel = tk.Button(self, text="Submit")
-        self.btn_cancel.grid(row="4", column="2")    
+        self.btn_submit = tk.Button(self, text="Submit")
+        self.btn_submit.grid(row="4", column="2")    
         #-------------------------------------------
         self.grid_columnconfigure( 0, weight="1")
         self.grid_columnconfigure( 1, weight="1")
@@ -128,8 +136,46 @@ class InfoFrame(tk.Frame):
 class MarkedFrame(tk.Frame):
     def __init__(self):
         tk.Frame.__init__(self)
-        self.lbl_notes = tk.Label(self, text="These items are marked for removal ").grid(row="0", column="0")
-        self.scr_items = scrolledtext.ScrolledText(self, height="8",width="60",)
+        self.lbl_notes = tk.Label(self, text="These items are marked for removal ").grid(row="0", column="0", columnspan = "3")
+        self.scr_items = scrolledtext.ScrolledText(self, height="8",width="60", )
+        self.scr_items.grid(row="1", column="0", columnspan="3")
+        #------------------------------------------
+        self.btn_cancel = tk.Button(self, text="Cancel")
+        self.btn_cancel.grid(row="2", column="0")
+        self.btn_submit = tk.Button(self, text="Submit")
+        self.btn_submit.grid(row="2", column="2")        
+class PrintFrameChecks(tk.Frame):
+    def __init__(self,parent):
+        tk.Frame.__init__(self, master= parent)
+        self.
+
+class PrintFrame(tk.Frame):
+    def __init__(self):
+        tk.Frame.__init__(self)
+        #-----------------------------------------
+        self.lbl_search = tk.Label(self, text="Search", font=TITLE_FONT).grid(row='0', column='0', columnspan='3')
+        tk.Frame.__init__(self)
+        self.lbl_search_by = tk.Label(self, text="Search By").grid(row="1", column="0")
+        options=["Info1", "Info2", "Info3"]
+        tkvar = tk.StringVar(self)
+        tkvar.set(options[0])
+        self.menu_search_by = tk.OptionMenu(self, tkvar, *options)
+        self.menu_search_by.grid(row="2", column="0", columnspan="2")        
+        #------------------------------------------
+        self.lbl_search_for = tk.Label(self, text="Search For: ").grid(row="3", column="0")
+        self.ent_search_for = tk.Entry(self,)
+        self.ent_search_for.grid(row="4", column="0")
+        #------------------------------------------
+        self.scr_info = scrolledtext.ScrolledText(self, height="8",width="60")
+        self.scr_info.grid(row="5", column="0", columnspan='3')
+        #------------------------------------------
+        self.btn_cancel = tk.Button(self, text="Cancel")
+        self.btn_cancel.grid(row="6", column="0")
+        self.btn_reset = tk.Button(self, text="Reset")
+        self.btn_reset.grid(row="6", column="1")
+        self.btn_confirm = tk.Button(self, text="Submit")
+        self.btn_confirm.grid(row="6", column="2")
+
 if __name__ == "__main__":
     datafile = open("game_lib.pickle" , "rb")
     library_database = pickle.load(datafile)
@@ -137,7 +183,7 @@ if __name__ == "__main__":
     maxkey = max(list(library_database.keys()))
     root = tk.Tk()
     root.title("Game Lib")
-    root.geometry("500x500")
+    #root.geometry("500x500")
     """main_menu = MainMenu()
     main_menu.grid(row="0" , column="0" ,sticky="news")
     
@@ -147,9 +193,13 @@ if __name__ == "__main__":
    
     editchooser = EditChooser()
     editchooser.grid(row="0" ,column="0")
+    info_frame= InfoFrame()
+    info_frame.grid(row="0", column="0")
+    marked_frame = MarkedFrame()
+    marked_frame.grid(row="0", column="0", sticky="news")
     removechooser = RemoveChooser()
     removechooser.grid(row="0" ,column="0")
     """
-    info_frame= InfoFrame()
-    info_frame.grid(row="0", column="0")
+    print_frame = PrintFrame()
+    print_frame.grid(row="0" ,column="0")    
     root.mainloop()
