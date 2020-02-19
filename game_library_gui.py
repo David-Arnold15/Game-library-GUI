@@ -7,23 +7,27 @@ class Screen(tk.Frame):
     current=0
     def __init__(self):
         tk.Frame.__init__(self)
+    def switch_frame():
+        screens[Screen.current].tkraise()
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class MainMenu(Screen):
+    
+    
     def __init__(self):
         
         Screen.__init__(self)
         self.lbl_title = tk.Label(self, text="Game Library", font=TITLE_FONT )
         self.lbl_title.grid(row="0", column = "1", sticky = "news")
         #Buttons
-        self.btn_add = tk.Button(self, text="Add" , font=BUTTON_FONT)
+        self.btn_add = tk.Button(self, text="Add" , font=BUTTON_FONT, command=self.go_add)
         self.btn_add.grid(row="1", column="1")
-        self.btn_edit= tk.Button(self, text="Edit" , font=BUTTON_FONT)
+        self.btn_edit= tk.Button(self, text="Edit" , font=BUTTON_FONT, command=self.go_edit)
         self.btn_edit.grid(row="2", column="1")
-        self.btn_search = tk.Button(self, text="Search" , font=BUTTON_FONT)
+        self.btn_search = tk.Button(self, text="Search" , font=BUTTON_FONT, command=self.go_print)
         self.btn_search.grid(row="3", column="1")
-        self.btn_remove = tk.Button(self, text="Remove" , font=BUTTON_FONT)
+        self.btn_remove = tk.Button(self, text="Remove" , font=BUTTON_FONT, command=self.go_remove)
         self.btn_remove.grid(row="4", column="1") 
-        self.btn_search = tk.Button(self, text="Save" , font=BUTTON_FONT)
+        self.btn_search = tk.Button(self, text="Save" , font=BUTTON_FONT, command=self.go_save)
         self.btn_search.grid(row="5", column="1")
         
         self.grid_columnconfigure(0,weight=1)
@@ -36,19 +40,51 @@ class MainMenu(Screen):
         self.grid_rowconfigure(3, weight = 1)
         self.grid_rowconfigure(4, weight = 1)
         self.grid_rowconfigure(5, weight = 3)
-        
+    def go_add(self):
+        Screen.current= 4
+        Screen.switch_frame()    
+    def go_edit(self):
+        pop_up = tk.Tk()
+        pop_up.title( "Edit")
+        frm_edit_list = EditChooser(pop_up)
+        frm_edit_list.grid(row=0, column=0, sticky="news")
+        frm_edit_list.tkraise()
+    def go_save(self):   
+        Screen.current= 1
+        Screen.switch_frame()
+    def go_remove(self):   
+        Screen.current= 3
+        Screen.switch_frame()    
+    def go_info(self):   
+        Screen.current= 4
+        Screen.switch_frame()    
+    
+    def go_print(self):   
+        Screen.current= 6
+        Screen.switch_frame()        
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class Saved(Screen):
     def __init__(self):
         Screen.__init__(self)
-        self.lbl_success = tk.Label(text = "File Saved.", font=TITLE_FONT).grid(row="0", column="0")
+        self.lbl_success = tk.Label(self, text = "File Saved.", font=TITLE_FONT).grid(row="0", column="1")
         
-        self.btn_ok = tk.Button(self, text="Ok", font=BUTTON_FONT)
-        self.btn_ok.grid(row="1", column="0")
+        self.btn_ok = tk.Button(self, text="Ok", font=BUTTON_FONT, command=self.go_menu)
+        self.btn_ok.grid(row="1", column="1")
+        
+        self.grid_columnconfigure(0, weight = 1)
+        self.grid_columnconfigure(1, weight = 1)
+        self.grid_columnconfigure(2, weight = 1)   
+        
+        self.grid_rowconfigure(0, weight = 1)
+        self.grid_rowconfigure(1, weight = 3)
+        self.grid_rowconfigure(2, weight = 1)
+    def go_menu(self):   
+        Screen.current= 0
+        Screen.switch_frame() 
 """-------------------------------------------------------------------------------------------------------------------------------------"""
-class EditChooser(Screen):
-    def __init__(self):
-        Screen.__init__(self)
+class EditChooser(tk.Frame):
+    def __init__(self, parent):
+        tk.Frame.__init__(self, master=parent)
         self.lbl_instructions = tk.Label(self, text = "Which title to Edit?", font=TITLE_FONT).grid(row="0", column="1", columnspan="2")
         
         options=["Title1", "Title2", "Title3"]
@@ -57,9 +93,9 @@ class EditChooser(Screen):
         self.menu_title = tk.OptionMenu(self, tkvar, *options)
         self.menu_title.grid(row="2", column="1", columnspan="2", sticky="news")
         
-        self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT)
+        self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT, command=self.go_menu)
         self.btn_cancel.grid(row="4", column="1")
-        self.btn_ok = tk.Button(self, text="Edit", font=BUTTON_FONT)
+        self.btn_ok = tk.Button(self, text="Edit", font=BUTTON_FONT, command=self.go_info)
         self.btn_ok.grid(row="4", column="2")     
         self.grid_columnconfigure(0, weight = 1)
         self.grid_columnconfigure(1, weight = 1)
@@ -72,6 +108,12 @@ class EditChooser(Screen):
         self.grid_rowconfigure(2, weight = 1)
         self.grid_rowconfigure(3, weight = 6)
         self.grid_rowconfigure(4, weight = 6)
+    def go_menu(self):   
+        Screen.current= 0
+        Screen.switch_frame()   
+    def go_info(self):   
+        Screen.current= 4
+        Screen.switch_frame()     
 
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class RemoveChooser(Screen):
@@ -85,10 +127,16 @@ class RemoveChooser(Screen):
         self.menu_title = tk.OptionMenu(self, tkvar, *options)
         self.menu_title.grid(row="1", column="0", columnspan="2")
         
-        self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT)
+        self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT, command=self.go_menu)
         self.btn_cancel.grid(row="2", column="0")
-        self.btn_ok = tk.Button(self, text="Remove", font=BUTTON_FONT)
-        self.btn_ok.grid(row="2", column="1")        
+        self.btn_ok = tk.Button(self, text="Remove", font=BUTTON_FONT,command=self.go_marked )
+        self.btn_ok.grid(row="2", column="1") 
+    def go_menu(self):   
+        Screen.current= 0
+        Screen.switch_frame()  
+    def go_marked(self):   
+        Screen.current= 5
+        Screen.switch_frame()    
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class InfoFrameEntries(tk.Frame):
 
@@ -152,14 +200,17 @@ class InfoFrame(Screen):
         self.scr_notes = scrolledtext.ScrolledText(self, height="8",width="60",)
         self.scr_notes.grid(row="3", column="0", columnspan="3")
         #------------------------------------------
-        self.btn_cancel = tk.Button(self, text="Cancel")
+        self.btn_cancel = tk.Button(self, text="Cancel", command=self.go_menu)
         self.btn_cancel.grid(row="4", column="0")
-        self.btn_submit = tk.Button(self, text="Submit")
+        self.btn_submit = tk.Button(self, text="Submit", command=self.go_menu )
         self.btn_submit.grid(row="4", column="2")    
         #-------------------------------------------
         self.grid_columnconfigure( 0, weight="1")
         self.grid_columnconfigure( 1, weight="1")
         self.grid_columnconfigure( 2, weight="1")
+    def go_menu(self):   
+        Screen.current= 0
+        Screen.switch_frame()      
 class MarkedFrame(Screen):
     def __init__(self):
         Screen.__init__(self)
@@ -167,10 +218,13 @@ class MarkedFrame(Screen):
         self.scr_items = scrolledtext.ScrolledText(self, height="8",width="60", )
         self.scr_items.grid(row="1", column="0", columnspan="3")
         #------------------------------------------
-        self.btn_cancel = tk.Button(self, text="Cancel")
+        self.btn_cancel = tk.Button(self, text="Cancel", command=self.go_menu)
         self.btn_cancel.grid(row="2", column="0")
-        self.btn_submit = tk.Button(self, text="Submit")
-        self.btn_submit.grid(row="2", column="2")        
+        self.btn_submit = tk.Button(self, text="Submit", command=self.go_menu)
+        self.btn_submit.grid(row="2", column="2")   
+    def go_menu(self):   
+        Screen.current= 0
+        Screen.switch_frame()     
 class PrintFrameChecks(tk.Frame):
     def __init__(self,parent):
         tk.Frame.__init__(self, master= parent)
@@ -213,33 +267,12 @@ if __name__ == "__main__":
     root.grid_columnconfigure(0, weight="1")
     root.grid_rowconfigure(0, weight="1")
     root.geometry("500x500")
-    """
-    main_menu = MainMenu()
-    main_menu.grid(row="0" , column="0" ,sticky="news")
     
-    saved = Saved()
-    saved.grid(row="0" , column="0" ,sticky="news")
-
-   
-    editchooser = EditChooser()
-    editchooser.grid(row="0" ,column="0", sticky="news")
-    info_frame= InfoFrame()
-    info_frame.grid(row="0", column="0", sticky="news")
-    marked_frame = MarkedFrame()
-    marked_frame.grid(row="0", column="0", sticky="news")
-    removechooser = RemoveChooser()
-    removechooser.grid(row="0" ,column="0", sticky="news")
-    print_frame = PrintFrame()
-    print_frame.grid(row="0" ,column="0", sticky="news") 
-    
-    marked_frame.tkraise()
-    info_frame.tkraise()
-    editchooser.tkraise()
-    """
-    screens = [MainMenu(), Saved(), EditChooser(),RemoveChooser(),InfoFrame(),MarkedFrame(),
+    screens = [MainMenu(), Saved(), EditChooser(None),RemoveChooser(),InfoFrame(),MarkedFrame(),
                PrintFrame()]    
     
     for i in range(len(screens)):
-        screens[i].grid(row="0", column="0", sticky="news")
-    screens[1].tkraise()
+        if i!=2:
+            screens[i].grid(row="0", column="0", sticky="news")
+    screens[0].tkraise()
     root.mainloop()
