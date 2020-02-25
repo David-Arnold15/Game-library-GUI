@@ -90,10 +90,13 @@ class EditChooser(tk.Frame):
         self.parent = parent
         self.lbl_instructions = tk.Label(self, text = "Which title to Edit?", font=TITLE_FONT).grid(row="0", column="1", columnspan="2")
         
-        options=["Title1", "Title2", "Title3"]
-        tkvar = tk.StringVar(self)
-        tkvar.set(options[0])
-        self.menu_title = tk.OptionMenu(self, tkvar, *options)
+        self.options = ["Select a title"]
+        
+        for key in library_database.keys():
+            self.options.append(library_database[key][1])
+        self.tkvar = tk.StringVar(self)
+        self.tkvar.set(self.options[0])
+        self.menu_title = tk.OptionMenu(self, self.tkvar, *self.options)
         self.menu_title.grid(row="2", column="1", columnspan="2", sticky="news")
         
         self.btn_cancel = tk.Button(self, text="Cancel", font=BUTTON_FONT, command=self.cancel)
@@ -114,9 +117,18 @@ class EditChooser(tk.Frame):
     def cancel(self):   
         self.parent.destroy()   
     def go_info(self):   
-        Screen.current= 4
-        Screen.switch_frame()
-        self.parent.destroy()        
+        if self.tkvar.get() == self.options[0]:
+            pass
+        else:
+            for i in range(len(self.options)):
+                if self.tkvar.get() == self.options[i]:
+                    screens[4].edit_key = i
+                    break;
+            Screen.current= 4
+            screens[Screen.current].update()
+
+            Screen.switch_frame()
+            self.parent.destroy()        
 
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class RemoveChooser(tk.Frame):
@@ -185,37 +197,73 @@ class InfoFrameEntries(tk.Frame):
         #---------------------------------------
 """-------------------------------------------------------------------------------------------------------------------------------------"""
 class InfoFrame(Screen):
-    def __init__(self):
+    def __init__(self,):
         Screen.__init__(self)
+        self.edit_key = 0
         #-----------------------------------------
         self.info_frame_entries = InfoFrameEntries(self)
         self.info_frame_entries.grid(row="0", column="0" ,columnspan="3", sticky="news")
         var1=None
         chk_beat = tk.Checkbutton(self, text='Beat it?',variable=var1, onvalue=1, offvalue=0,)
+        
         chk_beat.grid(row="1", column="0")        
         #---------------------------------------
+        
         options=["Single or Multiplayer?", "Single", "Multi"]
         tkvar = tk.StringVar(self)
         tkvar.set(options[0])
         self.menu = tk.OptionMenu(self, tkvar, *options)
         self.menu.grid(row="1", column="2", )
         #------------------------------------------
+        
         self.lbl_notes = tk.Label(self, text="Notes: ").grid(row="2", column="0", sticky="w" )
         self.scr_notes = scrolledtext.ScrolledText(self, height="8",width="60",)
         self.scr_notes.grid(row="3", column="0", columnspan="3")
         #------------------------------------------
+        
         self.btn_cancel = tk.Button(self, text="Cancel", command=self.go_menu)
         self.btn_cancel.grid(row="4", column="0")
         self.btn_submit = tk.Button(self, text="Submit", command=self.go_menu )
         self.btn_submit.grid(row="4", column="2")    
         #-------------------------------------------
+        
         self.grid_columnconfigure( 0, weight="1")
         self.grid_columnconfigure( 1, weight="1")
         self.grid_columnconfigure( 2, weight="1")
     def go_menu(self):   
         print("go_menu")
         Screen.current= 0
-        Screen.switch_frame()      
+        Screen.switch_frame()
+    def update(self):
+        #['price', 'completion status', 'purchase date', 'notes']
+        entry = library_database[self.edit_key]
+        self.info_frame_entries.ent_genre.delete(0,"end")
+        self.info_frame_entries.ent_genre.insert(0, entry[0])
+        
+        self.info_frame_entries.ent_title.delete(0,"end")
+        self.info_frame_entries.ent_title.insert(0, entry[1])
+        
+        self.info_frame_entries.ent_dev.delete(0,"end")
+        self.info_frame_entries.ent_dev.insert(0, entry[2])
+        
+        self.info_frame_entries.ent_pub.delete(0,"end")
+        self.info_frame_entries.ent_pub.insert(0, entry[3])
+        
+        self.info_frame_entries.ent_system.delete(0,"end")
+        self.info_frame_entries.ent_system.insert(0, entry[4])
+         
+        self.info_frame_entries.ent_rating.delete(0,"end")
+        self.info_frame_entries.ent_rating.insert(0, entry[5])
+        
+        self.info_frame_entries.ent_release_date.delete(0,"end")
+        self.info_frame_entries.ent_release_date.insert(0, entry[6])
+        
+        self.info_frame_entries.ent_price.delete(0,"end")
+        self.info_frame_entries.ent_price.insert(0, entry[8])
+        
+        self.info_frame_entries.ent_purchase_date.delete(0,"end")
+        self.info_frame_entries.ent_purchase_date.insert(0, entry[10])
+        
 class MarkedFrame(Screen):
     def __init__(self):
         Screen.__init__(self)
